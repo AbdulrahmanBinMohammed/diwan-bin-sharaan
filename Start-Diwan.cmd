@@ -6,5 +6,10 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
+node build.mjs
+if errorlevel 1 (
+  pause
+  exit /b 1
+)
 node server.mjs
 pause
