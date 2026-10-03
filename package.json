@@ -1,0 +1,14 @@
+{
+  "name": "diwan-bin-sharaan",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node server.mjs",
+    "test": "node test.mjs",
+    "prestart": "node build.mjs"
+  }
+}
