@@ -2363,3 +2363,37 @@ if(document.querySelector('[data-verse-card]')){
     }catch{if(token===request)message.textContent='تعذر تجهيز البطاقة. أغلق النافذة وحاول مرة أخرى.';}
   });
 }
+
+// Full-poem cards keep each verse intact and paginate using measured text height.
+if(document.querySelector('#copy-poem')){
+ const trigger=document.createElement('button');trigger.type='button';trigger.id='full-poem-card';trigger.textContent='بطاقة القصيدة كاملة';document.querySelector('#copy-poem').after(trigger);
+ const modal=document.createElement('dialog');modal.className='verse-card-dialog';modal.setAttribute('aria-label','بطاقات القصيدة كاملة');
+ modal.innerHTML='<div class="verse-card-header"><h2>بطاقات القصيدة كاملة</h2><button type="button" aria-label="إغلاق بطاقات القصيدة">×</button></div><p role="status"></p><img class="verse-card-preview" alt="" hidden><div class="verse-card-actions"><button data-prev>البطاقة السابقة</button><button data-next>البطاقة التالية</button></div><div class="verse-card-actions"><button data-save>حفظ البطاقة</button><button data-share>مشاركة البطاقة ↗</button></div>';
+ modal.querySelector('img').style.cssText='width:100%;max-height:calc(100dvh - 340px);object-fit:contain';document.body.append(modal);const image=modal.querySelector('img'),status=modal.querySelector('[role=status]'),prev=modal.querySelector('[data-prev]'),next=modal.querySelector('[data-next]'),save=modal.querySelector('[data-save]'),share=modal.querySelector('[data-share]');let cards=[],urls=[],index=0,run=0;
+ const clear=()=>{urls.forEach(URL.revokeObjectURL);urls=[];cards=[];image.removeAttribute('src');};
+ modal.querySelector('[aria-label]').onclick=()=>modal.close();modal.addEventListener('close',()=>{run++;clear();trigger.focus();});
+ const show=()=>{image.src=urls[index];image.alt=cards[index].alt;image.hidden=false;status.textContent=`البطاقة ${index+1} من ${cards.length} · احفظ كل بطاقة بالترتيب`;prev.disabled=index===0;next.disabled=index===cards.length-1;prev.hidden=next.hidden=cards.length===1;save.disabled=false;share.hidden=!(navigator.canShare?.({files:[cards[index].file]}));share.disabled=false;};
+ prev.onclick=()=>{if(index>0){index--;show();}};next.onclick=()=>{if(index<cards.length-1){index++;show();}};
+ save.onclick=()=>{if(!cards[index])return;const a=document.createElement('a');a.href=urls[index];a.download=cards[index].file.name;document.body.append(a);a.click();a.remove();status.textContent=`تم بدء حفظ البطاقة ${index+1} من ${cards.length}`;};
+ share.onclick=async()=>{if(!cards[index])return;try{await navigator.share({files:[cards[index].file],title:document.querySelector('h1').textContent});}catch(e){if(e.name!=='AbortError')status.textContent='تعذرت المشاركة؛ احفظ البطاقة وأرسلها.';}};
+ const wrap=(ctx,text,width)=>{const out=[];let line='';for(const word of text.split(' ')){const t=line?line+' '+word:word;if(line&&ctx.measureText(t).width>width){out.push(line);line=word;}else line=t;}if(line)out.push(line);return out;};
+ trigger.onclick=async()=>{clear();index=0;const token=++run;image.hidden=true;prev.hidden=next.hidden=true;save.disabled=share.disabled=true;share.hidden=true;status.textContent='جارٍ تجهيز بطاقات القصيدة…';modal.showModal();try{
+  await document.fonts.load('44px Diwan').catch(()=>{});await document.fonts.ready;if(token!==run)return;
+  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1440;const ctx=canvas.getContext('2d');ctx.font='44px Diwan, serif';
+  const verses=[...document.querySelectorAll('.verse')].map(v=>({parts:[...v.querySelectorAll('.hemistichs>span')].map(s=>s.textContent),note:v.querySelector('[data-card-note]')?.dataset.cardNote}));
+  const pages=[];let page=[],used=0;
+  for(const verse of verses){const lines=verse.parts.map(t=>wrap(ctx,t,840));const height=lines.flat().length*64+24;if(page.length&&used+height>780){pages.push(page);page=[];used=0;}page.push({...verse,lines,height});used+=height;}if(page.length)pages.push(page);
+  const author=document.querySelector('.poem-heading>p').textContent,title=document.querySelector('h1').textContent,url=new URL(location.href);url.hash='';url.search='';const qr=qrcode(0,'M');qr.addData(url.href);qr.make();
+  for(let p=0;p<pages.length;p++){
+   ctx.fillStyle='#f7f3e9';ctx.fillRect(0,0,1080,1440);ctx.fillStyle='#fffcf6';ctx.fillRect(42,42,996,1356);ctx.strokeStyle='#a78249';ctx.lineWidth=2;ctx.strokeRect(42,42,996,1356);ctx.lineWidth=1;ctx.strokeRect(57,57,966,1326);
+   ctx.textAlign='center';ctx.textBaseline='middle';ctx.direction='rtl';ctx.fillStyle='#183535';ctx.font='bold 44px Diwan, serif';ctx.fillText('ديوان بن شرعان',540,115);ctx.font='32px Diwan, serif';const titleLines=wrap(ctx,title,880);titleLines.forEach((t,i)=>ctx.fillText(t,540,178+i*40));
+   ctx.fillStyle='#9a7540';ctx.font='22px Tahoma, sans-serif';ctx.fillText(`القصيدة كاملة · ${p+1} / ${pages.length}`,540,255);
+   ctx.fillStyle='#183535';ctx.font='44px Diwan, serif';let y=320;for(const verse of pages[p]){for(const half of verse.lines)for(const line of half){ctx.fillText(line,540,y);y+=64;}y+=24;}
+   ctx.strokeStyle='#a78249';ctx.beginPath();ctx.moveTo(410,1100);ctx.lineTo(670,1100);ctx.stroke();ctx.font='30px Diwan, serif';ctx.fillText('الشاعر / '+author,540,1148,880);
+   const note=pages[p].find(v=>v.note)?.note;if(note){ctx.font='18px Tahoma, sans-serif';ctx.fillStyle='#67716c';ctx.fillText(note,645,1210,690);}
+   const n=qr.getModuleCount(),cell=Math.floor(180/(n+8)),edge=(n+8)*cell,left=76,top=1185;ctx.fillStyle='white';ctx.fillRect(left,top,edge,edge);ctx.fillStyle='#183535';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(qr.isDark(r,c))ctx.fillRect(left+(c+4)*cell,top+(r+4)*cell,cell,cell);ctx.font='18px Tahoma, sans-serif';ctx.fillText('القصيدة كاملة',left+edge/2,top+edge+18);
+   ctx.direction='ltr';ctx.fillStyle='#67716c';ctx.font='13px Tahoma, sans-serif';ctx.fillText('abdulrahmanbinmohammed.github.io/diwan-bin-sharaan',645,1345);
+   const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('PNG')),'image/png'));if(token!==run)return;cards.push({file:new File([blob],`diwan-${url.pathname.split('/').filter(Boolean).pop()}-card-${p+1}-of-${pages.length}.png`,{type:'image/png'}),alt:pages[p].map(v=>v.parts.join(' — ')).join('\n')});urls.push(URL.createObjectURL(blob));
+  }show();
+ }catch{if(token===run){clear();status.textContent='تعذر تجهيز البطاقات. أغلق النافذة وحاول مرة أخرى.';}}};
+}
