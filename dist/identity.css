@@ -84,3 +84,35 @@ main{max-width:1200px;padding-inline:40px}.hero{padding:56px 0 64px;gap:60px}.he
 .verse-card-preview{display:block;width:100%;height:auto;border-radius:3px}.verse-card-preview[hidden]{display:none}
 .verse-card-actions{display:flex;gap:10px;margin-top:14px}.verse-card-actions button{flex:1;min-height:46px;font-size:14px}.card-download{background:var(--ink);color:var(--bg)}.verse-card-actions [hidden]{display:none}
 @media(max-width:600px){.verse-actions{align-self:center}.verse-card-dialog{padding:12px}.verse-card-header h2{font-size:17px}}
+
+/* Let poetry occupy the mobile reading width; keep secondary actions beneath it. */
+.reading-actions .share-options{min-width:160px}
+.share-options summary{list-style:none;cursor:pointer;min-height:44px;padding:8px 18px;border:1px solid var(--line);border-radius:7px;background:var(--paper);text-align:center}
+.share-options summary::-webkit-details-marker{display:none}
+.share-options summary:after{content:' ＋';color:var(--gold)}
+.share-options[open] summary:after{content:' −'}
+.share-options summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.share-options-panel{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding-top:10px}
+.share-options:not([open])>.share-options-panel{display:none}
+.reading-actions:has(.share-options[open]){width:100%}
+.reading-actions .share-options[open]{flex:1;min-width:230px}
+@media(max-width:600px){
+ .reader-page .reading-actions{display:flex;align-items:start;gap:8px}
+ .reader-page .reading-actions>#copy-poem,.reader-page .reading-actions>.share-options{flex:1;min-width:0}
+ .reader-page .reading-actions>.share-options[open]{flex-basis:100%;order:2}
+ .reader-page .share-options summary{font-size:13px;padding:9px 12px}
+ .reader-page .share-options-panel{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .reader-page .share-options-panel #full-poem-card{grid-column:1/-1}
+ .reader-page .verse{display:grid;grid-template-columns:16px minmax(0,1fr);gap:8px 5px;padding:20px 0 12px}
+ .reader-page .verse-number{grid-column:1;grid-row:1;width:auto;margin-top:10px;text-align:center}
+ .reader-page .hemistichs{grid-column:2;grid-row:1;width:100%;gap:6px;line-height:1.75}
+ .reader-page .verse-actions{grid-column:2;display:flex;flex-direction:row;justify-content:flex-end;gap:8px;align-self:auto}
+ .reader-page .verse-actions button{font-size:11px;min-height:44px;padding:6px 10px}
+ .hero{padding-top:18px;padding-bottom:32px}
+ .hero .quote-panel{padding:22px 14px;margin:0 4px 22px}
+ .hero-copy{min-height:465px;padding:28px 14px 185px;background-size:100% 100%,auto 215px}
+ .hero-copy h1{font-size:clamp(32px,10.2vw,52px);line-height:1.4;margin:6px 0 12px;white-space:nowrap}
+ .hero-copy .poet-name{font-size:21px;line-height:1.65;margin:8px auto 12px}
+ .hero-copy .hero-desc{font-size:13px;line-height:1.9;margin:10px auto 18px;max-width:30em}
+ .hero-copy .eyebrow{margin-bottom:8px;font-size:12px}
+}

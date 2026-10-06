@@ -2397,3 +2397,13 @@ if(document.querySelector('#copy-poem')){
   }show();
  }catch{if(token===run){clear();status.textContent='تعذر تجهيز البطاقات. أغلق النافذة وحاول مرة أخرى.';}}};
 }
+
+// Group optional sharing tools without changing their existing handlers.
+if(document.querySelector('.reading-actions')){
+ const actions=document.querySelector('.reading-actions'),options=document.createElement('details');options.className='share-options';
+ const summary=document.createElement('summary');summary.textContent='مشاركة وحفظ';options.append(summary);
+ const panel=document.createElement('div');panel.className='share-options-panel';panel.setAttribute('role','group');panel.setAttribute('aria-label','خيارات المشاركة والحفظ');
+ for(const id of ['share','copy-link','full-poem-card']){const button=document.getElementById(id);if(button)panel.append(button);}
+ options.append(panel);actions.append(options);
+ options.addEventListener('keydown',e=>{if(e.key==='Escape'){options.open=false;summary.focus();}});
+}
