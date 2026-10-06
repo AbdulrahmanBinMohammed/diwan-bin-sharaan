@@ -2347,15 +2347,15 @@ if(document.querySelector('[data-verse-card]')){
       do{ctx.font=`${size}px Diwan, serif`;lines=parts.map(s=>wrap(ctx,s,820));leading=size*1.65;total=lines.reduce((n,a)=>n+a.length,0)*leading+32;if(total<=340&&lines.flat().every(s=>ctx.measureText(s).width<=820))break;size-=2;}while(size>=24);
       ctx.fillStyle='#183535';let y=480-total/2+leading/2;for(const half of lines){for(const line of half){ctx.fillText(line,540,y);y+=leading;}y+=32;}
       ornament(710);ctx.fillStyle='#183535';let authorSize=30;do{ctx.font=`${authorSize}px Diwan, serif`;if(ctx.measureText('الشاعر / '+author).width<=690)break;authorSize--;}while(authorSize>18);ctx.fillText('الشاعر / '+author,540,765);
-      if(button.dataset.cardNote){ctx.font='19px Tahoma, sans-serif';ctx.fillStyle='#67716c';ctx.fillText(button.dataset.cardNote,645,838,690);}
-      ctx.direction='ltr';ctx.font='17px Tahoma, sans-serif';ctx.fillStyle='#67716c';ctx.font='13px Tahoma, sans-serif';ctx.fillText('abdulrahmanbinmohammed.github.io/diwan-bin-sharaan',540,965);
+      if(button.dataset.cardNote){ctx.font='19px Tahoma, sans-serif';ctx.fillStyle='#67716c';ctx.fillText(button.dataset.cardNote,540,802,880);}
+      ctx.direction='ltr';ctx.font='17px Tahoma, sans-serif';ctx.fillStyle='#67716c';ctx.font='13px Tahoma, sans-serif';ctx.fillText('abdulrahmanbinmohammed.github.io/diwan-bin-sharaan',540,1006);
       // A local QR encoder keeps the saved image self-contained; four quiet modules on every side.
       const poemUrl=new URL(location.href);poemUrl.hash='';poemUrl.search='';
       const qr=qrcode(0,'M');qr.addData(poemUrl.href);qr.make();
-      const modules=qr.getModuleCount(),cell=Math.floor(188/(modules+8)),edge=(modules+8)*cell,left=76,top=750;
+      const modules=qr.getModuleCount(),cell=Math.floor(150/(modules+8)),edge=(modules+8)*cell,left=(1080-edge)/2,top=button.dataset.cardNote?832:810;
       ctx.fillStyle='#fffcf6';ctx.fillRect(left,top,edge,edge);ctx.fillStyle='#183535';
       for(let row=0;row<modules;row++)for(let col=0;col<modules;col++)if(qr.isDark(row,col))ctx.fillRect(left+(col+4)*cell,top+(row+4)*cell,cell,cell);
-      ctx.direction='rtl';ctx.font='18px Tahoma, sans-serif';ctx.fillText('القصيدة كاملة',left+edge/2,top+edge+19);
+      
       const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('image')),'image/png'));if(token!==request)return;
       file=new File([blob],`diwan-${location.pathname.split('/').filter(Boolean).pop()}-${verse.id}.png`,{type:'image/png'});
       if(imageUrl)URL.revokeObjectURL(imageUrl);imageUrl=URL.createObjectURL(blob);preview.src=imageUrl;preview.alt=parts.join(' — ')+' — '+author;preview.hidden=false;save.disabled=false;
@@ -2390,9 +2390,9 @@ if(document.querySelector('#copy-poem')){
    if(pages.length>1){ctx.direction='ltr';ctx.fillStyle='#9a7540';ctx.font='22px Tahoma, sans-serif';ctx.fillText(`${p+1} / ${pages.length}`,540,220);}ctx.direction='rtl';
    ctx.fillStyle='#183535';ctx.font='44px Diwan, serif';let y=320;for(const verse of pages[p]){for(const half of verse.lines)for(const line of half){ctx.fillText(line,540,y);y+=64;}y+=24;}
    ctx.strokeStyle='#a78249';ctx.beginPath();ctx.moveTo(410,1100);ctx.lineTo(670,1100);ctx.stroke();ctx.font='30px Diwan, serif';ctx.fillText('الشاعر / '+author,540,1148,880);
-   const note=pages[p].find(v=>v.note)?.note;if(note){ctx.font='18px Tahoma, sans-serif';ctx.fillStyle='#67716c';ctx.fillText(note,645,1210,690);}
-   const n=qr.getModuleCount(),cell=Math.floor(180/(n+8)),edge=(n+8)*cell,left=76,top=1141;ctx.fillStyle='#fffcf6';ctx.fillRect(left,top,edge,edge);ctx.fillStyle='#183535';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(qr.isDark(r,c))ctx.fillRect(left+(c+4)*cell,top+(r+4)*cell,cell,cell);
-   ctx.direction='ltr';ctx.fillStyle='#67716c';ctx.font='13px Tahoma, sans-serif';ctx.fillText('abdulrahmanbinmohammed.github.io/diwan-bin-sharaan',540,1345);
+   const note=pages[p].find(v=>v.note)?.note;if(note){ctx.font='18px Tahoma, sans-serif';ctx.fillStyle='#67716c';ctx.fillText(note,540,1180,880);}
+   const n=qr.getModuleCount(),cell=Math.floor(150/(n+8)),edge=(n+8)*cell,left=(1080-edge)/2,top=1200;ctx.fillStyle='#fffcf6';ctx.fillRect(left,top,edge,edge);ctx.fillStyle='#183535';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(qr.isDark(r,c))ctx.fillRect(left+(c+4)*cell,top+(r+4)*cell,cell,cell);
+   ctx.direction='ltr';ctx.fillStyle='#67716c';ctx.font='13px Tahoma, sans-serif';ctx.fillText('abdulrahmanbinmohammed.github.io/diwan-bin-sharaan',540,1370);
    const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('PNG')),'image/png'));if(token!==run)return;cards.push({file:new File([blob],`diwan-${url.pathname.split('/').filter(Boolean).pop()}-card-${p+1}-of-${pages.length}.png`,{type:'image/png'}),alt:pages[p].map(v=>v.parts.join(' — ')).join('\n')});urls.push(URL.createObjectURL(blob));
   }show();
  }catch{if(token===run){clear();status.textContent='تعذر تجهيز البطاقات. أغلق النافذة وحاول مرة أخرى.';}}};
