@@ -72,3 +72,15 @@ main{max-width:1200px;padding-inline:40px}.hero{padding:56px 0 64px;gap:60px}.he
  .index-page .search-row input{min-width:0}
  .index-page .search-row button{width:auto;flex-shrink:0;padding-inline:14px}
 }
+
+.verse-actions{display:flex;flex-direction:column;align-items:center;gap:2px}
+.verse-actions button{min-height:44px;min-width:44px;padding:6px 8px;font-size:11px}
+.share-verse{background:transparent;border-color:transparent;color:var(--muted);border-radius:6px}
+.share-verse:hover,.share-verse:focus-visible{border-color:var(--gold);color:var(--ink);background:var(--paper)}
+.verse-card-dialog{border:1px solid var(--line);border-radius:12px;padding:18px;background:var(--bg);color:var(--ink);width:min(540px,calc(100% - 24px));max-height:calc(100dvh - 28px);overflow:auto;box-shadow:0 18px 70px #0005}
+.verse-card-dialog::backdrop{background:#0c2020b3}
+.verse-card-header{display:flex;align-items:center;justify-content:space-between;gap:12px}.verse-card-header h2{font-size:19px;margin:0}.card-close{min-width:44px;min-height:44px;font-size:24px;padding:0;border:0;background:transparent}
+.card-message{font-size:12px;color:var(--muted);margin:10px 0;text-align:center}
+.verse-card-preview{display:block;width:100%;height:auto;border-radius:3px}.verse-card-preview[hidden]{display:none}
+.verse-card-actions{display:flex;gap:10px;margin-top:14px}.verse-card-actions button{flex:1;min-height:46px;font-size:14px}.card-download{background:var(--ink);color:var(--bg)}.verse-card-actions [hidden]{display:none}
+@media(max-width:600px){.verse-actions{align-self:center}.verse-card-dialog{padding:12px}.verse-card-header h2{font-size:17px}}
