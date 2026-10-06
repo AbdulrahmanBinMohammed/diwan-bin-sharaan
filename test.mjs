@@ -26,7 +26,7 @@ try {
   for (const base of ['', '/diwan-test']) {
     build(base);
     const pages = walk(root).filter(f => f.endsWith('.html'));
-    assert.equal(pages.length,data.length+3,'يوجد مسار قديم أو صفحة ناقصة');
+    assert.equal(pages.length,data.length+2,'يوجد مسار قديم أو صفحة ناقصة');
     for (const file of pages) {
       const html = fs.readFileSync(file,'utf8');
       assert.match(html, /lang="ar" dir="rtl"/);
@@ -58,8 +58,9 @@ try {
     await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
     try{
       const origin='http://127.0.0.1:'+server.address().port;
-      for(const route of ['/', '/index/', '/review/', ...data.map(p=>'/poems/'+p.id+'/')])assert.equal((await fetch(origin+base+route)).status,200);
+      for(const route of ['/', '/index/', ...data.map(p=>'/poems/'+p.id+'/')])assert.equal((await fetch(origin+base+route)).status,200);
       assert.equal((await fetch(origin+base+'/missing/')).status,404);
+      assert.equal((await fetch(origin+base+'/review/')).status,404);
       assert.equal((await fetch(origin+base+'/poems/p32/')).status,404);
       const searchData=await (await fetch(origin+base+'/data.json')).json();
       assert.deepEqual(searchData.map(p=>p.displayNumber),expectedNumbers,'ترقيم بيانات البحث غير متسلسل');
@@ -76,3 +77,4 @@ try {
 } finally {
   buildSite();
 }
+
