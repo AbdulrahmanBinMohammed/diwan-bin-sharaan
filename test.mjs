@@ -12,6 +12,12 @@ const data = JSON.parse(source);
 const escape = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const walk = dir => fs.readdirSync(dir, {withFileTypes:true}).flatMap(f => f.isDirectory() ? walk(path.join(dir,f.name)) : [path.join(dir,f.name)]);
 validatePoems(data);
+const expectedNumbers = data.map((_, i) => String(i + 1).padStart(2, '0'));
+assert.deepEqual(data.map(p => p.displayNumber), expectedNumbers, 'ترقيم العرض غير متسلسل');
+assert.ok(!data.some(p => p.id === 'p32'), 'أُعيدت القصيدة المحذوفة');
+for (const [id, number] of [['p33', '32'], ['p34', '33'], ['p35', '34'], ['p36', '35']]) {
+  assert.equal(data.find(p => p.id === id)?.displayNumber, number, 'تغير رابط القصيدة أو رقم عرضها: ' + id);
+}
 assert.throws(() => validatePoems([...data, data[0]]));
 assert.throws(() => validatePoems([{...data[0], id:'../bad'}]));
 assert.throws(() => validatePoems([{...data[0], verses:[['شطر ناقص']]}]));
@@ -36,8 +42,13 @@ try {
         assert.ok(fs.existsSync(target),file+' -> '+url);
       }
     }
+    const index=fs.readFileSync(path.join(root,'index','index.html'),'utf8');
+    assert.deepEqual([...index.matchAll(/class="ordinal">([^<]+)</g)].map(m=>m[1]),expectedNumbers,'ترقيم الفهرس غير متسلسل');
+    assert.deepEqual([...index.matchAll(/class="poem-card" href="[^"]*\/poems\/([^/]+)\//g)].map(m=>m[1]),data.map(p=>p.id),'تغير ترتيب القصائد أو روابطها');
+    assert.ok(!fs.existsSync(path.join(root,'poems','p32')),'أُعيد إنشاء مسار القصيدة المحذوفة');
     for(const p of data){
       const html=fs.readFileSync(path.join(root,'poems',p.id,'index.html'),'utf8');
+      assert.ok(html.includes(`<link rel="canonical" href="https://example.org${base}/poems/${p.id}/">`),'تغير الرابط الأساسي: '+p.id);
       const pairs=[...html.matchAll(/<div class="hemistichs">(.*?)<\/div>/g)].map(m=>[...m[1].matchAll(/<span>(.*?)<\/span>/g)].map(s=>s[1]));
       assert.deepEqual(pairs,p.verses.map(v=>v.map(escape)),'تغير نص أو ترتيب الأبيات: '+p.id);
     }
@@ -49,6 +60,10 @@ try {
       const origin='http://127.0.0.1:'+server.address().port;
       for(const route of ['/', '/index/', '/review/', ...data.map(p=>'/poems/'+p.id+'/')])assert.equal((await fetch(origin+base+route)).status,200);
       assert.equal((await fetch(origin+base+'/missing/')).status,404);
+      assert.equal((await fetch(origin+base+'/poems/p32/')).status,404);
+      const searchData=await (await fetch(origin+base+'/data.json')).json();
+      assert.deepEqual(searchData.map(p=>p.displayNumber),expectedNumbers,'ترقيم بيانات البحث غير متسلسل');
+      assert.deepEqual(searchData.map(p=>p.id),data.map(p=>p.id),'تغيرت روابط نتائج البحث');
       assert.equal((await fetch(origin+base+'/%ZZ')).status,400);
       assert.equal((await fetch(origin+base+'/',{method:'POST'})).status,405);
       const head=await fetch(origin+base+'/data.json',{method:'HEAD'});
