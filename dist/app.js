@@ -2407,3 +2407,9 @@ if(document.querySelector('.reading-actions')){
  options.append(panel);actions.append(options);
  options.addEventListener('keydown',e=>{if(e.key==='Escape'){options.open=false;summary.focus();}});
 }
+
+// Keep reference metadata with the source, and reveal extra search controls on demand.
+const referenceMeta=document.querySelector('.poem-heading>small'),sourceBox=document.querySelector('.source-panel');
+if(referenceMeta&&sourceBox){const reference=document.createElement('p');reference.className='source-reference';reference.textContent=referenceMeta.textContent;sourceBox.querySelector('summary').after(reference);referenceMeta.remove();}
+const extraFilters=document.querySelector('.index-page .filters');
+if(extraFilters){const disclosure=document.createElement('details');disclosure.className='search-options';const label=document.createElement('summary');label.textContent='خيارات البحث';disclosure.append(label);extraFilters.before(disclosure);disclosure.append(extraFilters);const scope=document.querySelector('#scope');if(scope&&scope.value!=='all')disclosure.open=true;}

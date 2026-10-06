@@ -116,3 +116,37 @@ main{max-width:1200px;padding-inline:40px}.hero{padding:56px 0 64px;gap:60px}.he
  .hero-copy .hero-desc{font-size:13px;line-height:1.9;margin:10px auto 18px;max-width:30em}
  .hero-copy .eyebrow{margin-bottom:8px;font-size:12px}
 }
+
+/* Consistent masthead, compact search, and legible secondary details. */
+body{--gold:#80602f;--muted:#58645e}body.dark{--gold:#d2b178;--muted:#b8b8ae}
+header .brand small{font-size:13px;line-height:1.7}
+.back,.section-head>a,.card-foot>span:last-child{font-weight:500}
+.source-panel{border-radius:8px}.source-panel summary{min-height:44px;display:list-item;line-height:1.8;padding-block:8px;font-size:14px}
+.source-reference{font-size:13px;color:var(--muted)}
+.search-options{margin:0 0 10px;border-bottom:1px solid var(--line)}
+.search-options summary{cursor:pointer;min-height:44px;padding:8px 0;font-size:13px;color:var(--ink)}
+.search-options summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.index-page .search-options .filters{margin:0 0 14px}
+.index-page .search-box{margin-bottom:0}
+.index-page .page-intro{padding-bottom:4px}
+.index-page .page-intro .eyebrow{margin-bottom:6px}
+.index-page #result-count{font-size:13px;color:var(--muted)}
+.search-row input,.filters select,.source-panel,button{border-radius:7px}
+@media(max-width:600px){
+ header,.reader-page header{padding:12px 18px;gap:10px;align-items:center}
+ header .brand,.reader-page header .brand{flex-direction:row;gap:9px;margin:0;text-align:right;font-size:24px;max-width:calc(100% - 50px)}
+ header .seal,.reader-page header .seal{font-size:30px;width:38px;height:42px;flex-shrink:0}
+ header .brand small,.reader-page header .brand small{font-size:12px;line-height:1.65;margin-top:5px}
+ header .theme,.reader-page header .theme{position:static;width:40px;height:40px;min-width:40px;flex-shrink:0;margin-inline-start:auto;padding:0}
+ header nav,.reader-page header nav{gap:9px;font-size:17px}
+ header nav a,.reader-page header nav a{min-height:44px;padding:8px 12px}
+ .index-page .page-intro{padding-top:18px}
+ .index-page .page-intro h1{font-size:32px;margin:4px 0}
+ .index-page .page-intro p{font-size:13px;line-height:1.8}
+ .index-page .search-box{padding:10px 0}
+ .index-page .search-box label{font-size:13px;margin-bottom:6px}
+ .index-page .search-options{margin-bottom:4px}
+ .index-page .search-options .filters label{min-width:0}
+ .poem-card .card-foot{font-size:12px}
+ .verse-actions button{color:var(--muted)}
+}
