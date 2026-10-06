@@ -2353,7 +2353,7 @@ if(document.querySelector('[data-verse-card]')){
       const poemUrl=new URL(location.href);poemUrl.hash='';poemUrl.search='';
       const qr=qrcode(0,'M');qr.addData(poemUrl.href);qr.make();
       const modules=qr.getModuleCount(),cell=Math.floor(188/(modules+8)),edge=(modules+8)*cell,left=76,top=794;
-      ctx.fillStyle='#ffffff';ctx.fillRect(left,top,edge,edge);ctx.fillStyle='#183535';
+      ctx.fillStyle='#fffcf6';ctx.fillRect(left,top,edge,edge);ctx.fillStyle='#183535';
       for(let row=0;row<modules;row++)for(let col=0;col<modules;col++)if(qr.isDark(row,col))ctx.fillRect(left+(col+4)*cell,top+(row+4)*cell,cell,cell);
       ctx.direction='rtl';ctx.font='18px Tahoma, sans-serif';ctx.fillText('القصيدة كاملة',left+edge/2,top+edge+19);
       const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('image')),'image/png'));if(token!==request)return;
@@ -2391,7 +2391,7 @@ if(document.querySelector('#copy-poem')){
    ctx.fillStyle='#183535';ctx.font='44px Diwan, serif';let y=320;for(const verse of pages[p]){for(const half of verse.lines)for(const line of half){ctx.fillText(line,540,y);y+=64;}y+=24;}
    ctx.strokeStyle='#a78249';ctx.beginPath();ctx.moveTo(410,1100);ctx.lineTo(670,1100);ctx.stroke();ctx.font='30px Diwan, serif';ctx.fillText('الشاعر / '+author,540,1148,880);
    const note=pages[p].find(v=>v.note)?.note;if(note){ctx.font='18px Tahoma, sans-serif';ctx.fillStyle='#67716c';ctx.fillText(note,645,1210,690);}
-   const n=qr.getModuleCount(),cell=Math.floor(180/(n+8)),edge=(n+8)*cell,left=76,top=1185;ctx.fillStyle='white';ctx.fillRect(left,top,edge,edge);ctx.fillStyle='#183535';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(qr.isDark(r,c))ctx.fillRect(left+(c+4)*cell,top+(r+4)*cell,cell,cell);ctx.font='18px Tahoma, sans-serif';ctx.fillText('القصيدة كاملة',left+edge/2,top+edge+18);
+   const n=qr.getModuleCount(),cell=Math.floor(180/(n+8)),edge=(n+8)*cell,left=76,top=1185;ctx.fillStyle='#fffcf6';ctx.fillRect(left,top,edge,edge);ctx.fillStyle='#183535';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(qr.isDark(r,c))ctx.fillRect(left+(c+4)*cell,top+(r+4)*cell,cell,cell);ctx.font='18px Tahoma, sans-serif';ctx.fillText('القصيدة كاملة',left+edge/2,top+edge+18);
    ctx.direction='ltr';ctx.fillStyle='#67716c';ctx.font='13px Tahoma, sans-serif';ctx.fillText('abdulrahmanbinmohammed.github.io/diwan-bin-sharaan',645,1345);
    const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('PNG')),'image/png'));if(token!==run)return;cards.push({file:new File([blob],`diwan-${url.pathname.split('/').filter(Boolean).pop()}-card-${p+1}-of-${pages.length}.png`,{type:'image/png'}),alt:pages[p].map(v=>v.parts.join(' — ')).join('\n')});urls.push(URL.createObjectURL(blob));
   }show();
