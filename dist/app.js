@@ -2386,8 +2386,8 @@ if(document.querySelector('#copy-poem')){
   const author=document.querySelector('.poem-heading>p').textContent,title=document.querySelector('h1').textContent,url=new URL(location.href);url.hash='';url.search='';const qr=qrcode(0,'M');qr.addData(url.href);qr.make();
   for(let p=0;p<pages.length;p++){
    ctx.fillStyle='#f7f3e9';ctx.fillRect(0,0,1080,1440);ctx.fillStyle='#fffcf6';ctx.fillRect(42,42,996,1356);ctx.strokeStyle='#a78249';ctx.lineWidth=2;ctx.strokeRect(42,42,996,1356);ctx.lineWidth=1;ctx.strokeRect(57,57,966,1326);
-   ctx.textAlign='center';ctx.textBaseline='middle';ctx.direction='rtl';ctx.fillStyle='#183535';ctx.font='bold 44px Diwan, serif';ctx.fillText('ديوان بن شرعان',540,115);ctx.font='32px Diwan, serif';const titleLines=wrap(ctx,title,880);titleLines.forEach((t,i)=>ctx.fillText(t,540,178+i*40));
-   ctx.fillStyle='#9a7540';ctx.font='22px Tahoma, sans-serif';ctx.fillText(`القصيدة كاملة · ${p+1} / ${pages.length}`,540,255);
+   ctx.textAlign='center';ctx.textBaseline='middle';ctx.direction='rtl';ctx.fillStyle='#183535';ctx.font='bold 44px Diwan, serif';ctx.fillText('ديوان بن شرعان',540,115);
+   if(pages.length>1){ctx.direction='ltr';ctx.fillStyle='#9a7540';ctx.font='22px Tahoma, sans-serif';ctx.fillText(`${p+1} / ${pages.length}`,540,220);}ctx.direction='rtl';
    ctx.fillStyle='#183535';ctx.font='44px Diwan, serif';let y=320;for(const verse of pages[p]){for(const half of verse.lines)for(const line of half){ctx.fillText(line,540,y);y+=64;}y+=24;}
    ctx.strokeStyle='#a78249';ctx.beginPath();ctx.moveTo(410,1100);ctx.lineTo(670,1100);ctx.stroke();ctx.font='30px Diwan, serif';ctx.fillText('الشاعر / '+author,540,1148,880);
    const note=pages[p].find(v=>v.note)?.note;if(note){ctx.font='18px Tahoma, sans-serif';ctx.fillStyle='#67716c';ctx.fillText(note,645,1210,690);}
