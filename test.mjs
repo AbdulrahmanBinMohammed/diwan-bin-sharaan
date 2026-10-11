@@ -13,6 +13,14 @@ const escape = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt
 const walk = dir => fs.readdirSync(dir, {withFileTypes:true}).flatMap(f => f.isDirectory() ? walk(path.join(dir,f.name)) : [path.join(dir,f.name)]);
 validatePoems(data);
 const expectedNumbers = data.map((_, i) => String(i + 1).padStart(2, '0'));
+const advice = data.find(p => p.id === 'p39');
+assert.equal(advice?.displayNumber, '38');
+assert.deepEqual(advice?.verses, [
+  ['يامحمد أوصيك بالتقوى وحسن السلوك', 'احفظ صلاتك تراها مثل طوق النجاه'],
+  ['ماينفع المال لو عندك كنوز البنوك', 'ماينفعك كانك مفرط بركن الصلاه'],
+], 'تغير نص وصية الشاعر لولده محمد');
+assert.equal(advice?.source.label, 'وصية الشاعر لولده محمد');
+assert.ok(advice?.readingNotes.includes('وصية الشاعر لولده محمد'));
 assert.deepEqual(data.map(p => p.displayNumber), expectedNumbers, 'ترقيم العرض غير متسلسل');
 assert.ok(!data.some(p => p.id === 'p32'), 'أُعيدت القصيدة المحذوفة');
 for (const [id, number] of [['p33', '32'], ['p34', '33'], ['p35', '34'], ['p36', '35']]) {
@@ -52,6 +60,8 @@ try {
       const pairs=[...html.matchAll(/<div class="hemistichs">(.*?)<\/div>/g)].map(m=>[...m[1].matchAll(/<span>(.*?)<\/span>/g)].map(s=>s[1]));
       assert.deepEqual(pairs,p.verses.map(v=>v.map(escape)),'تغير نص أو ترتيب الأبيات: '+p.id);
     }
+    const adviceHtml = fs.readFileSync(path.join(root, 'poems', 'p39', 'index.html'), 'utf8');
+    assert.match(adviceHtml, /<details class="source-panel">.*<p>وصية الشاعر لولده محمد<\/p>.*<\/details>/, 'وصف المصدر غير ظاهر');
     const home=fs.readFileSync(path.join(root,'index.html'),'utf8');
     assert.deepEqual([...home.matchAll(/class="poem-card" href="[^"]*\/poems\/([^/]+)\//g)].map(m=>m[1]),['p04','p05','p14']);
     const server=createServer(root,base);
